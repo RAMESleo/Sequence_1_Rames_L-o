@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="identifiants"
+
+        android:title="Identifiants">
+        <EditTextPreference
+            android:defaultValue='{"promo":"2020-2021","profs":[{"prenom":"tom","nom":"bou"},{"prenom":"mohamed","nom":"bou"},{"prenom":"mathieu","nom":"hau"}]}'
+            android:key="login"
+            android:title="Pseudo" />
+    </PreferenceCategory>
+
+
+</PreferenceScreen>

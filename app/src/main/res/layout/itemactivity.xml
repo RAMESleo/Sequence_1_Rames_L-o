@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#00BCD4">
+    <include
+        android:id="@+id/include"
+        layout="@layout/actionbar" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ListeItem"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@+id/adBarItem"
+        app:layout_constraintTop_toBottomOf="@+id/include">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
+
+    <RelativeLayout
+        android:id="@+id/adBarItem"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#4A4A4A"
+        android:padding="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:ignore="MissingConstraints"
+        tools:layout_editor_absoluteX="0dp">
+
+
+        <EditText
+            android:id="@+id/AddItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="8dp"
+            android:background="#FFFFFF"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <ImageButton
+            android:id="@+id/addButtonItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="80dp"
+            android:layout_marginEnd="8dp"
+            android:background="#4A4A4A"
+
+            android:onClick="addClick"
+            app:srcCompat="@drawable/ic_add" />
+    </RelativeLayout>
+    <include
+        android:id="@+id/IncludeMenuLayout"
+        layout="@layout/menu"
+
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>
