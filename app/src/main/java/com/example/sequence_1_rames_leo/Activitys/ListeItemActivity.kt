@@ -13,8 +13,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.sequence_1_rames_leo.Autres.ItemAdapter
-import com.example.sequence_1_rames_leo.Autres.ItemToDo
+import com.example.sequence_1_rames_leo.Autres.*
 import com.example.sequence_1_rames_leo.R
 
 class ListeItemActivity : AppCompatActivity()  , ItemAdapter.OnItemClickListener {
@@ -22,13 +21,15 @@ class ListeItemActivity : AppCompatActivity()  , ItemAdapter.OnItemClickListener
     private lateinit var ajoutItem: EditText
     private lateinit var adBtn: ImageButton
     private lateinit var PseudoCourant : String
-    private lateinit var ListeCourante : String
+    private lateinit var TitreListeCourante : String
     private lateinit var ListeItem : ArrayList<ItemToDo>
     private lateinit var recyclerview : RecyclerView
     private lateinit var trashToolbar : ImageView
     private var isLongClicked : ArrayList<Int> = ArrayList()
     private lateinit var menuImage :ImageView
     private lateinit var menuLayout : RelativeLayout
+    private lateinit var ListeCourante : ListeTodo
+
 
     override fun onCreate(@Nullable savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,20 +37,26 @@ class ListeItemActivity : AppCompatActivity()  , ItemAdapter.OnItemClickListener
 
 
 
-        if (intent.hasExtra("PseudoAdded")){
+        /*if (intent.hasExtra("PseudoAdded")){
             PseudoCourant = intent.getStringExtra("PseudoAdded").toString()
-        }
+        }*/
+       // PseudoCourant = DataProvider.getPseudo()
         if (intent.hasExtra("ListeAdded")){
-            ListeCourante = intent.getStringExtra("ListeAdded").toString()
+            TitreListeCourante = intent.getStringExtra("ListeAdded").toString()
         }
-        Log.d("CAT","liste COurante"+ListeCourante)
-        this.ListeItem = mesDonnees.getListe(PseudoCourant,ListeCourante).GetListeItem()
+        ListeCourante = DataProvider.getUser().getListToDo(TitreListeCourante)
+
+
+
+        Log.d("CAT","liste COurante: "+ TitreListeCourante)
+        this.ListeItem = ListeCourante.GetListeItem()
+
 
 
         recyclerview = findViewById<RecyclerView>(R.id.ListeItem)
 
         Titre = findViewById(R.id.TitreToolBar)
-        Titre.setText("Liste : $ListeCourante")
+        Titre.setText("Liste : $TitreListeCourante")
         ajoutItem = findViewById(R.id.AddItem)
         adBtn = findViewById(R.id.addButtonItem)
         trashToolbar = findViewById(R.id.TrashToolBar)
@@ -100,7 +107,9 @@ class ListeItemActivity : AppCompatActivity()  , ItemAdapter.OnItemClickListener
     }
     private fun MAJAffichage(){
 
-        this.ListeItem = mesDonnees.getListe(PseudoCourant,ListeCourante).GetListeItem()
+        //this.ListeItem = mesDonnees.getListe(PseudoCourant,TitreListeCourante).GetListeItem()
+
+
         recyclerview.adapter = ItemAdapter(ListeItem, this)
         //  recyclerview.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         Log.d("PostAdapter", ListeItem.toString())
@@ -121,8 +130,12 @@ class ListeItemActivity : AppCompatActivity()  , ItemAdapter.OnItemClickListener
 
                 } else {
                     //alerter("click sur + avec ce titre:" + TitreListe )
-                    var bool = mesDonnees.addItem(TitreItem,this.ListeCourante,this.PseudoCourant)
-                    if (!bool){
+                    //var bool = mesDonnees.addItem(TitreItem,this.ListeCourante,this.PseudoCourant)
+
+                    var requete = MyAsyncTask()
+                    var S = requete.execute(MainActivity.AddItem, TitreItem,TitreListeCourante).get()
+
+                    if (S != "ItemAdded"){
                         alerter("Il y a déjà un item de ce nom")
                     }else{
                         this.MAJAffichage()
@@ -134,7 +147,10 @@ class ListeItemActivity : AppCompatActivity()  , ItemAdapter.OnItemClickListener
 
             R.id.TrashToolBar-> {
                 for(k in isLongClicked){
-                    mesDonnees.RemoveItem(ListeItem[k].GetTitre(),this.ListeCourante,this.PseudoCourant)
+                    //mesDonnees.RemoveItem(ListeItem[k].GetTitre(),this.ListeCourante,this.PseudoCourant)
+                    var requete = MyAsyncTask()
+                    var S = requete.execute(MainActivity.DelItem , ListeItem[k].GetTitre(),TitreListeCourante).get()
+
                 }
                 this.MAJAffichage()
                 switchTashVisibility()
@@ -170,9 +186,11 @@ class ListeItemActivity : AppCompatActivity()  , ItemAdapter.OnItemClickListener
 
         val clickedItem = ListeItem[position]
         alerter("click sur l'item ${clickedItem.GetTitre()}")
-        clickedItem.SwitchState()
-        //this.MAJAffichage()
-        mesDonnees.MAJinfos()
+        var requete = MyAsyncTask()
+        var S = requete.execute(MainActivity.SwitchState , clickedItem.GetTitre(),TitreListeCourante).get()
+
+        this.MAJAffichage()
+        //mesDonnees.MAJinfos()
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

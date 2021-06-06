@@ -3,9 +3,10 @@ package com.example.sequence_1_rames_leo.Autres
 import android.os.Build
 import androidx.annotation.RequiresApi
 
-class ProfilListeToDo(Pseudo: String , ListeListe : ArrayList<ListeTodo>?) {
+class ProfilListeToDo(Pseudo: String , ListeListe : ArrayList<ListeTodo>? = null , var  HASH : String? =null) {
     private var mesListesToDo: ArrayList<ListeTodo> = ArrayList()
-    private lateinit var pseudo : String
+    var pseudo : String
+    lateinit var MdP : String
 
     init {
         pseudo = Pseudo
@@ -61,7 +62,7 @@ class ProfilListeToDo(Pseudo: String , ListeListe : ArrayList<ListeTodo>?) {
         for(ListeTodo k : this.mesListesToDo){
             toString = toString + k.toString() + "\n";
         }*/
-        return toString!!
+        return toString
     }
 
 

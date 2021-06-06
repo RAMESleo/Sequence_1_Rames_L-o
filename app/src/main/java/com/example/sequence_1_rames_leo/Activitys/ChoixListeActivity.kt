@@ -2,6 +2,8 @@ package com.example.sequence_1_rames_leo.Activitys
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.ConnectivityManager
+import android.net.NetworkInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,7 +16,12 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.sequence_1_rames_leo.*
+import com.example.sequence_1_rames_leo.Activitys.MainActivity.Companion.AddList
+import com.example.sequence_1_rames_leo.Activitys.MainActivity.Companion.DelList
+import com.example.sequence_1_rames_leo.Activitys.MainActivity.Companion.GetItems
+import com.example.sequence_1_rames_leo.Autres.DataProvider
 import com.example.sequence_1_rames_leo.Autres.ListeTodo
+import com.example.sequence_1_rames_leo.Autres.MyAsyncTask
 import com.example.sequence_1_rames_leo.Autres.postAdapter
 
 class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListener {
@@ -35,11 +42,9 @@ class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListene
 
 
 
-        if (intent.hasExtra("PseudoAdded")){
-            PseudoCourant = intent.getStringExtra("PseudoAdded").toString()
-        }
-         this.ListeListe = mesDonnees.getProfil(PseudoCourant).GetMesListeToDo()
-
+        PseudoCourant = DataProvider.getPseudo()
+        // this.ListeListe = mesDonnees.getProfil(PseudoCourant).GetMesListeToDo()
+        this.ListeListe = DataProvider.getList()
 
         recyclerview = findViewById<RecyclerView>(R.id.ListeListe)
 
@@ -68,6 +73,28 @@ class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListene
     }
 
 
+    fun verifReseau(): Boolean {
+        // On vérifie si le réseau est disponible,
+        // si oui on change le statut du bouton de connexion
+        val cnMngr = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val netInfo = cnMngr.activeNetworkInfo
+        var sType = "Aucun réseau détecté"
+        var bStatut = false
+        if (netInfo != null) {
+            val netState = netInfo.state
+            if (netState.compareTo(NetworkInfo.State.CONNECTED) == 0) {
+                bStatut = true
+                val netType = netInfo.type
+                when (netType) {
+                    ConnectivityManager.TYPE_MOBILE -> sType = "Réseau mobile détecté"
+                    ConnectivityManager.TYPE_WIFI -> sType = "Réseau wifi détecté"
+                }
+            }
+        }
+        Log.i("RES", bStatut.toString())
+        return bStatut
+    }
+
 
     fun switchTashVisibility(){
         if (trashToolbar.isVisible){
@@ -95,7 +122,9 @@ class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListene
     }
     private fun MAJAffichage(){
 
-        ListeListe = mesDonnees.getProfil(PseudoCourant).GetMesListeToDo()
+        //ListeListe = mesDonnees.getProfil(PseudoCourant).GetMesListeToDo()
+
+        ListeListe = DataProvider.getList()
         recyclerview.adapter = postAdapter(ListeListe, this)
       //  recyclerview.layoutManager = LinearLayoutManager(this, RecyclerView.VERTICAL, false)
         Log.d("PostAdapter", ListeListe.toString())
@@ -116,8 +145,10 @@ class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListene
 
                 } else {
                     //alerter("click sur + avec ce titre:" + TitreListe )
-                    var bool = mesDonnees.addListe(TitreListe,this.PseudoCourant)
-                    if (!bool){
+                    //var bool = mesDonnees.addListe(TitreListe,this.PseudoCourant)
+                    var requete = MyAsyncTask()
+                    var S = requete.execute(AddList, TitreListe).get()
+                    if (S!="ListAdded"){
                         alerter("Il y a déjà une liste de ce nom")
                     }else{
                         this.MAJAffichage()
@@ -128,7 +159,9 @@ class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListene
             }
             R.id.TrashToolBar-> {
                 for(k in isLongClicked){
-                    mesDonnees.RemoveListe(ListeListe[k].GetTitre(),this.PseudoCourant)
+                    //mesDonnees.RemoveListe(ListeListe[k].GetTitre(),this.PseudoCourant)
+                    var requete = MyAsyncTask()
+                    var S = requete.execute(DelList, ListeListe[k].GetTitre()).get()
                 }
                 this.MAJAffichage()
                 switchTashVisibility()
@@ -149,6 +182,8 @@ class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListene
                 }
             }
             R.id.PreferencesText -> {
+
+
                 Log.i("TEST", "click sur Preferences")
                 val iGP = Intent(this, GestionPreferences::class.java)
                 startActivity(iGP)
@@ -165,10 +200,15 @@ class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListene
 
         val clickedItem = ListeListe[position]
         alerter("click sur la liste ${clickedItem.GetTitre()}")
-        val intent = Intent(this, ListeItemActivity::class.java)
-        intent.putExtra("PseudoAdded",PseudoCourant)
-        intent.putExtra("ListeAdded", clickedItem.GetTitre())
-        startActivity(intent)
+        var requete = MyAsyncTask()
+        val bool = requete.execute(GetItems,clickedItem.toString()).get()
+        if(bool == "ItemGeted"){
+            val intent = Intent(this, ListeItemActivity::class.java)
+
+            intent.putExtra("ListeAdded", clickedItem.GetTitre())
+            startActivity(intent)
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

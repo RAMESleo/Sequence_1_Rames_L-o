@@ -2,10 +2,9 @@ package com.example.sequence_1_rames_leo.Autres
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import com.example.sequence_1_rames_leo.Autres.ItemToDo
 
-class ListeTodo(titre : String , ListeItem : ArrayList<ItemToDo>?) {
-    private lateinit var Titre : String
+class ListeTodo(titre: String, ListeItem: ArrayList<ItemToDo>?, var id: String? = null) {
+    private var Titre : String
     private var ListeItemsToDo :ArrayList<ItemToDo> = ArrayList()
 
     init{
@@ -38,13 +37,29 @@ class ListeTodo(titre : String , ListeItem : ArrayList<ItemToDo>?) {
         return compteur ==0
     }
 
-    fun AddItem(newItem : ItemToDo){
-        this.ListeItemsToDo.add(newItem)
+    fun AddItem(newItem: ItemToDo): Boolean {
+        if(pasDejaDedansItem(newItem.GetTitre())) {
+            this.ListeItemsToDo.add(newItem)
+            return true
+        }
+        return false
     }
     @RequiresApi(Build.VERSION_CODES.N)
     fun RemoveItem(Titre :String){
         ListeItemsToDo.removeIf { x -> x.GetTitre() == Titre}
 
+    }
+    fun getID(): String? {
+        return this.id
+    }
+
+    fun GetItemToDo(Titre: String): ItemToDo {
+        for(k in ListeItemsToDo){
+            if(k.GetTitre() == Titre ){
+                return k
+            }
+        }
+        return ListeItemsToDo[0]
     }
 
     override fun toString()  : String{

@@ -1,7 +1,7 @@
 package com.example.sequence_1_rames_leo.Autres
 
-class ItemToDo (titre : String , state : Boolean?){
-    private lateinit var Titre: String
+class ItemToDo (titre : String , state : Boolean?, var id: String? = null){
+    private var Titre: String
     private var State : Boolean = false
 
 
@@ -33,6 +33,9 @@ class ItemToDo (titre : String , state : Boolean?){
         }else{
             this.State = true
         }
+    }
+    fun getID(): String? {
+        return this.id
     }
 
 

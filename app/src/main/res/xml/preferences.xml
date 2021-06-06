@@ -1,14 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <PreferenceCategory
         android:key="identifiants"
 
         android:title="Identifiants">
         <EditTextPreference
-            android:defaultValue='{"promo":"2020-2021","profs":[{"prenom":"tom","nom":"bou"},{"prenom":"mohamed","nom":"bou"},{"prenom":"mathieu","nom":"hau"}]}'
+            android:defaultValue=''
             android:key="login"
             android:title="Pseudo" />
+        <EditTextPreference
+            android:defaultValue=''
+            android:key="MdP"
+            android:title="Mot de Passe" />
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:key="API"
+
+        android:title="Identifiants">
+        <EditTextPreference
+            android:defaultValue="http://tomnab.fr/todo-api/"
+            android:key="URLAPI"
+            android:title="URL" />
+        <EditTextPreference
+            android:defaultValue="http://tomnab.fr/todo-api/"
+            android:key="hashCodeCourant"
+            android:title="Hashcode" />
     </PreferenceCategory>
 
 

@@ -86,16 +86,6 @@ class postAdapter (
         fun onItemClick(position : Int)
         fun onItemLongClick(position : Int)
     }
-    companion object {
-        private const val LIST_ITEM = 1
-        private const val ITEM_ITEM = 2
-
-    }
-
-
-
-
-
     }
 
 

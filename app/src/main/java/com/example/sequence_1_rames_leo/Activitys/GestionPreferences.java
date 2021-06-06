@@ -2,7 +2,6 @@ package com.example.sequence_1_rames_leo.Activitys;
 
 
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.EditTextPreference;
 import android.preference.PreferenceActivity;
 
@@ -15,8 +14,12 @@ import java.util.List;
 
 
 public class GestionPreferences extends PreferenceActivity  {
-    CheckBoxPreference cbp;
-    EditTextPreference edtpl;
+
+    EditTextPreference Log;
+    EditTextPreference MdP;
+    EditTextPreference URL;
+    EditTextPreference HASH;
+
 private List<ProfilListeToDo> listePseudo;
 
     @SuppressWarnings("deprecation")
@@ -27,8 +30,12 @@ private List<ProfilListeToDo> listePseudo;
 
         addPreferencesFromResource(R.xml.preferences);
 
-        cbp = (CheckBoxPreference) findPreference("remember");
-        edtpl = (EditTextPreference) findPreference("login");
+
+        Log = (EditTextPreference) findPreference("login");
+        MdP = (EditTextPreference) findPreference("MdP");
+        HASH = (EditTextPreference) findPreference("hashCodeCourant");
+        URL = (EditTextPreference) findPreference("URLAPI");
+
 
     }
 /*

@@ -29,37 +29,67 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/include" />
 
+    <TextView
+        android:id="@+id/MDPText"
+        android:layout_width="99dp"
+        android:layout_height="38dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="MdP:"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/PseudoText" />
+
+
     <EditText
         android:id="@+id/PseudoEdit"
         android:layout_width="0dp"
         android:layout_height="38dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         android:background="@color/white"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
+        android:text="tom"
         android:textColorHint="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/PseudoText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toEndOf="@+id/PseudoText"
 
-        app:layout_constraintVertical_bias="1.0" />
+        />
+
+    <EditText
+        android:id="@+id/MDPEdit"
+        android:layout_width="0dp"
+        android:layout_height="38dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/white"
+        android:ems="10"
+        android:inputType="textPassword"
+        android:text="web"
+
+
+        android:textColorHint="@color/black"
+        app:layout_constraintEnd_toEndOf="@+id/PseudoEdit"
+        app:layout_constraintStart_toEndOf="@+id/MDPText"
+        app:layout_constraintTop_toBottomOf="@+id/PseudoEdit"
+        tools:ignore="MissingConstraints" />
 
     <Button
         android:id="@+id/boutonOK"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+
         android:layout_marginEnd="16dp"
 
         android:background="@color/teal_200"
-
         android:onClick="onClick"
         android:text="OK"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/PseudoEdit" />
+        app:layout_constraintTop_toBottomOf="@+id/MDPEdit" />
 
     <include
         android:id="@+id/IncludeMenuLayout"

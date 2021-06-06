@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.gson.GsonBuilder
 import org.json.JSONArray
-import org.json.JSONException
 import org.json.JSONObject
 import java.io.File
 import java.io.FileWriter
@@ -27,11 +26,7 @@ class Localdata(titre: String, chemin: File?) {
         }else{
             //Log.i("CAT",lecture)
             //DonneesJson = JSONObject(lecture)
-            val gson = GsonBuilder()
-                .serializeNulls()
-                .disableHtmlEscaping()
-                .setPrettyPrinting()
-                .create()
+
 
 
 
