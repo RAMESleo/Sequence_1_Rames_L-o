@@ -1,14 +1,19 @@
 package com.example.sequence_1_rames_leo.Autres
 
+import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.example.sequence_1_rames_leo.DataBase.AppDatabase
 
 
 object DataProvider {
     private val user = User("1")
     public var firstLog : Boolean = true
     public var isLOG : Boolean = false
+    public lateinit var db : RoomDatabase
 
 
 
@@ -32,6 +37,10 @@ object DataProvider {
 
         var newid : String = user.newid()
         return user.AddList( ListeTodo(Titre ,null , newid ))
+    }
+
+    fun addList(liste : ListeTodo){
+        user.AddList(liste)
     }
 
     @RequiresApi(Build.VERSION_CODES.N)

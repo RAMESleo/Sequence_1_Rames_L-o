@@ -7,10 +7,7 @@ import android.preference.PreferenceActivity;
 
 import androidx.annotation.Nullable;
 
-import com.example.sequence_1_rames_leo.Autres.ProfilListeToDo;
 import com.example.sequence_1_rames_leo.R;
-
-import java.util.List;
 
 
 public class GestionPreferences extends PreferenceActivity  {
@@ -20,7 +17,7 @@ public class GestionPreferences extends PreferenceActivity  {
     EditTextPreference URL;
     EditTextPreference HASH;
 
-private List<ProfilListeToDo> listePseudo;
+
 
     @SuppressWarnings("deprecation")
     @Override

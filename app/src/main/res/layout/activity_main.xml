@@ -51,7 +51,7 @@
         android:background="@color/white"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="tom"
+        android:text="leo"
         android:textColorHint="@color/black"
         app:layout_constraintBottom_toBottomOf="@+id/PseudoText"
         app:layout_constraintEnd_toEndOf="parent"
@@ -68,7 +68,7 @@
         android:background="@color/white"
         android:ems="10"
         android:inputType="textPassword"
-        android:text="web"
+        android:text="pepe"
 
 
         android:textColorHint="@color/black"

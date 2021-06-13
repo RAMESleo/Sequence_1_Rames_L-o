@@ -14,19 +14,24 @@ import com.example.sequence_1_rames_leo.Activitys.MainActivity.Companion.DelItem
 import com.example.sequence_1_rames_leo.Activitys.MainActivity.Companion.DelList
 import com.example.sequence_1_rames_leo.Activitys.MainActivity.Companion.GetItems
 import com.example.sequence_1_rames_leo.Activitys.MainActivity.Companion.LOG
+import com.example.sequence_1_rames_leo.Activitys.MainActivity.Companion.LOGFromPref
 import com.example.sequence_1_rames_leo.Activitys.MainActivity.Companion.SwitchState
 import com.example.sequence_1_rames_leo.Activitys.MainActivity.Companion.UnCheckItem
 import okhttp3.*
 import org.json.JSONObject
 
 
-class MyAsyncTask : AsyncTask<String, Void, String>() {
+class MyAsyncTask(ItemParam : ItemToDo? = null) : AsyncTask<String, Void, String>() {
     private lateinit  var sp : SharedPreferences
     private lateinit  var  editor: SharedPreferences.Editor
+    private  var ItemfromDB : ItemToDo? = null
 
     init{
         sp = PreferenceManager.getDefaultSharedPreferences(MainActivity.Companion.context)
         editor = sp.edit();
+        if(ItemParam != null){
+            ItemfromDB=ItemParam
+        }
     }
 
 
@@ -121,7 +126,7 @@ class MyAsyncTask : AsyncTask<String, Void, String>() {
     fun getItemswList(titre: String): Boolean {
         try {
             val Liste = DataProvider.getUser().getListToDo(titre)
-            Log.i("LOAD", "id: " + Liste.getID().toString())
+            Log.i("MAJ", "id: " + Liste.getID().toString())
             DataProvider.getUser().idListCourante = Liste.getID().toString()
             val client = OkHttpClient().newBuilder()
                 .build()
@@ -149,14 +154,14 @@ class MyAsyncTask : AsyncTask<String, Void, String>() {
                 if(stateString=="1"){
                     state = true
                 }
-                //Log.i("LOAD","label : $label \t state : ")
+                Log.i("MAJ","label : $label \t state : $state")
                 Liste.AddItem(ItemToDo(label, state, id))
 
                 }
             return true
             }   catch (e: Exception) {
 
-        Log.i("LOAD", "Error Occurred: ${e.message}")
+        Log.i("MAJ", "Error Occurred: ${e.message}")
     }
     return false
 
@@ -214,8 +219,9 @@ class MyAsyncTask : AsyncTask<String, Void, String>() {
     fun LogInbase(){
         try{
 
-            val pseudoInPref = sp.getString("login", "tom")
-            val MdPInPref = sp.getString("MdP", "web")
+            val pseudoInPref = sp.getString("login", "leo")
+            val MdPInPref = sp.getString("MdP", "tom")
+            Log.i("LOAD",pseudoInPref +"\t"+ MdPInPref)
 
             val client = OkHttpClient().newBuilder()
                 .build()
@@ -307,7 +313,6 @@ class MyAsyncTask : AsyncTask<String, Void, String>() {
     return false
     }
 
-
     fun SwitchStateItem(TitreItem:String, TitreListe : String,check :String): Boolean {
         try{
             val Liste = DataProvider.getUser().getListToDo(TitreListe)
@@ -323,7 +328,7 @@ class MyAsyncTask : AsyncTask<String, Void, String>() {
                 .addHeader("hash", DataProvider.getUser().HASH)
                 .build()
             val response = client.newCall(request).execute()
-            Log.i("LOAD",response.body()?.string().toString())
+            Log.i("LOAD","modif item" + response.body()?.string().toString())
 
 
             return true
@@ -335,6 +340,31 @@ class MyAsyncTask : AsyncTask<String, Void, String>() {
 
     }
 
+    fun SwitchStateItemwIDS(ItemId:String, ListeID : String,check :String): Boolean {
+        try{
+
+
+            val client = OkHttpClient().newBuilder()
+                .build()
+            val mediaType = MediaType.parse("text/plain")
+            val body = RequestBody.create(mediaType, "")
+            val request: Request = Request.Builder()
+                .url("http://tomnab.fr/todo-api/lists/${ListeID}/items/${ItemId}?check=${check}")
+                .method("PUT", body)
+                .addHeader("hash", DataProvider.getUser().HASH)
+                .build()
+            val response = client.newCall(request).execute()
+            Log.i("LOAD","modif item" + response.body()?.string().toString())
+
+
+            return true
+        } catch (e: Exception) {
+
+            Log.i("LOAD", "Error Occurred: ${e.message}")
+        }
+        return false
+
+    }
 
    /* protected override fun onPostExecute(result: String)  : Boolean{
 
@@ -347,26 +377,26 @@ class MyAsyncTask : AsyncTask<String, Void, String>() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun doInBackground(vararg params: String): String {
-        if(DataProvider.firstLog){
+        if (DataProvider.firstLog) {
             LogInbase()
             DataProvider.firstLog = false
         }
 
-        if(params[0] == LOG){
-         //   val BOOL : Boolean =TryLogIn("tom","web")
-        val BOOL : Boolean =TryLogIn(DataProvider.getPseudo(), DataProvider.getMdP())
+        if (params[0] == LOG) {
+            //   val BOOL : Boolean =TryLogIn("tom","web")
+            val BOOL: Boolean = TryLogIn(DataProvider.getPseudo(), DataProvider.getMdP())
             Log.i("LOAD", BOOL.toString())
-        if(BOOL) {
+            if (BOOL) {
 
-            DataProvider.isLOG = true
-            //Log.i("LOAD", "Pseudo: ${DataProvider.getPseudo()} \t ${DataProvider.getMdP()}")
-            getListwHash()
-            //Log.i("LOAD", "List: ${DataProvider.getList()}")
-            //getItemswList(DataProvider.getList()[0].GetTitre())
-        }
+                DataProvider.isLOG = true
+                //Log.i("LOAD", "Pseudo: ${DataProvider.getPseudo()} \t ${DataProvider.getMdP()}")
+                getListwHash()
+                //Log.i("LOAD", "List: ${DataProvider.getList()}")
+                //getItemswList(DataProvider.getList()[0].GetTitre())
+            }
         }
 
-        if(params[0] == AddList) {
+        if (params[0] == AddList) {
 
             val add: Boolean = DataProvider.addList(params[1])
 
@@ -384,18 +414,18 @@ class MyAsyncTask : AsyncTask<String, Void, String>() {
             }
         }
 
-        if(params[0] == DelList){
+        if (params[0] == DelList) {
             //   val BOOL : Boolean =TryLogIn("tom","web")
-            val BOOL : Boolean = delListtoHash(params[1])
+            val BOOL: Boolean = delListtoHash(params[1])
             Log.i("LOAD", BOOL.toString())
-            if(BOOL) {
+            if (BOOL) {
                 DataProvider.delList(params[1])
 
-                return("ListDel")
+                return ("ListDel")
             }
         }
 
-        if(params[0] == AddItem) {
+        if (params[0] == AddItem) {
             val Liste = DataProvider.getUser().getListToDo(params[2])
             var bool = Liste.AddItem(ItemToDo(params[1], false))
             Log.i("LOAD", "avant if" + bool.toString())
@@ -415,42 +445,42 @@ class MyAsyncTask : AsyncTask<String, Void, String>() {
             }
         }
 
-        if(params[0] == DelItem){
-                val Liste = DataProvider.getUser().getListToDo(params[2])
+        if (params[0] == DelItem) {
+            val Liste = DataProvider.getUser().getListToDo(params[2])
 
 
-                val BOOL: Boolean = delItemToListtoHash(params[1], params[2])
-                Log.i("LOAD", BOOL.toString())
-                if (BOOL) {
-                    Liste.RemoveItem(params[1])
-                    //getItemswList(DataProvider.getUser().idListCourante)
-                    return ("ItemDel")
-                } else {
+            val BOOL: Boolean = delItemToListtoHash(params[1], params[2])
+            Log.i("LOAD", BOOL.toString())
+            if (BOOL) {
+                Liste.RemoveItem(params[1])
+                //getItemswList(DataProvider.getUser().idListCourante)
+                return ("ItemDel")
+            } else {
 
-                    //DataProvider.delList(params[1])
-                    return ("not Done")
-                }
+                //DataProvider.delList(params[1])
+                return ("not Done")
+            }
 
 
         }
 
-        if(params[0] == GetItems){
+        if (params[0] == GetItems) {
 
-            val BOOL =getItemswList(params[1])
-            if(BOOL){
+            val BOOL = getItemswList(params[1])
+            if (BOOL) {
                 return "ItemGeted"
             }
         }
 
-        if(params[0] == SwitchState){
+        if (params[0] == SwitchState) {
             val Liste = DataProvider.getUser().getListToDo(params[2])
             val Item = Liste.GetItemToDo(params[1])
             Item.SwitchState()
-            var bool : Boolean = false
-            if(Item.GetState()){
-                bool = SwitchStateItem(params[1],params[2],"1")
-            }else{
-                bool = SwitchStateItem(params[1],params[2],"0")
+            var bool: Boolean = false
+            if (Item.GetState()) {
+                bool = SwitchStateItem(params[1], params[2], "1")
+            } else {
+                bool = SwitchStateItem(params[1], params[2], "0")
             }
             if (bool) {
 
@@ -464,14 +494,44 @@ class MyAsyncTask : AsyncTask<String, Void, String>() {
 
         }
 
+        if (params[0] == CheckItem) {
+
+            if (ItemfromDB != null) {
+                if (ItemfromDB?.GetState() == true) {
+                    SwitchStateItemwIDS(params[1], params[2], "1")
+                    getListwHash()
+                    return "item checked"
+                }
+            } else {
+                return ("not Done")
+            }
+        }
+
+            if (params[0] == UnCheckItem) {
+
+                if (ItemfromDB != null) {
+                    if (ItemfromDB?.GetState() == false) {
+                        SwitchStateItemwIDS(params[1], params[2], "0")
+                        getListwHash()
+                        return "item unchecked"
+                    }
+                } else {
+                    return ("not Done")
+                }
+            }
+
+            if (params[0] == LOGFromPref) {
+                LogInbase()
+            }
 
 
 
 
 
 
-        return "done"
+
+            return "done"
+        }
+
+
     }
-
-
-}

@@ -40,7 +40,7 @@ class ItemToDo (titre : String , state : Boolean?, var id: String? = null){
 
 
     override fun toString(): String {
-        return "ItemToDo(Titre='$Titre', State=$State)"
+        return "{ \"Titre\" : \"$Titre\", \"id\" : \"$id\", \"state\" : $State }"
     }
 
 

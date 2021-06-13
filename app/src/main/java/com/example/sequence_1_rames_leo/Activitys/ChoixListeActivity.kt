@@ -35,16 +35,21 @@ class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListene
     private var isLongClicked : ArrayList<Int> = ArrayList()
     private lateinit var menuImage :ImageView
     private lateinit var menuLayout : RelativeLayout
+    private var internet :Boolean = true
 
     override fun onCreate(@Nullable savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.listactivity)
-
-
+        val bundle = intent.extras
+        internet = bundle?.getBoolean("internet?", true) == true
 
         PseudoCourant = DataProvider.getPseudo()
+        Log.i("Tes",DataProvider.getPseudo())
         // this.ListeListe = mesDonnees.getProfil(PseudoCourant).GetMesListeToDo()
+
         this.ListeListe = DataProvider.getList()
+
+
 
         recyclerview = findViewById<RecyclerView>(R.id.ListeListe)
 
@@ -57,6 +62,11 @@ class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListene
         menuLayout =findViewById(R.id.MenuLayout)
         menuLayout.isVisible = false
 
+        if(!internet){
+            adBtn.isVisible = false
+            ajoutListe.isVisible = false
+            findViewById<RelativeLayout>(R.id.adBar).isVisible = false
+        }
 
         Log.d("PostAdapter", ListeListe.toString())
         recyclerview.adapter = postAdapter(ListeListe, this)
@@ -66,11 +76,26 @@ class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListene
 
 
         }
-    override fun onResume(){
+    override fun onResume() {
         super.onResume()
         menuLayout.isVisible = false
+        if (!verifReseau() and internet == true) {
+            val intent = Intent(this, PopUpDeco::class.java)
+            intent.putExtra("popuptext", "Il semblerai qu'il n'y ai pas internet, vous avez été déconecté")
+            startActivity(intent)
+        }
 
     }
+
+    override fun onPause() {
+        super.onPause()
+        if (!verifReseau() and internet == true) {
+            val intent = Intent(this, PopUpDeco::class.java)
+            intent.putExtra("popuptext", "Il semblerai qu'il n'y ai pas internet, vous avez été déconecté")
+            startActivity(intent)
+        }
+    }
+
 
 
     fun verifReseau(): Boolean {
@@ -103,6 +128,7 @@ class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListene
             trashToolbar.isVisible = true
         }
     }
+
     fun isInList(pos : Int):Boolean{
         var compteur = 0
         for(k in isLongClicked){
@@ -120,6 +146,7 @@ class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListene
         t.show()
 
     }
+
     private fun MAJAffichage(){
 
         //ListeListe = mesDonnees.getProfil(PseudoCourant).GetMesListeToDo()
@@ -170,6 +197,7 @@ class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListene
             }
         }
     }
+
     @SuppressLint("RestrictedApi")
     fun onClick(v:View?){
         when(v!!.id){
@@ -195,17 +223,30 @@ class ChoixListeActivity : AppCompatActivity()  , postAdapter.OnItemClickListene
     }
 
 
-
     override fun onItemClick(position: Int) {
 
         val clickedItem = ListeListe[position]
-        alerter("click sur la liste ${clickedItem.GetTitre()}")
+        //alerter("click sur la liste ${clickedItem.GetTitre()}")
+        if(verifReseau() and internet == true){
         var requete = MyAsyncTask()
         val bool = requete.execute(GetItems,clickedItem.toString()).get()
         if(bool == "ItemGeted"){
             val intent = Intent(this, ListeItemActivity::class.java)
 
             intent.putExtra("ListeAdded", clickedItem.GetTitre())
+            startActivity(intent)
+        }}
+        else if(!verifReseau() and internet == true){
+
+            val intent = Intent(this, PopUpDeco::class.java)
+            intent.putExtra("popuptext", "Il semblerai qu'il n'y ai pas internet, vous avez été déconecté")
+            startActivity(intent)
+        }
+        else{
+            val intent = Intent(this, ListeItemActivity::class.java)
+
+            intent.putExtra("ListeAdded", clickedItem.GetTitre())
+            intent.putExtra("internet?",false)
             startActivity(intent)
         }
 
