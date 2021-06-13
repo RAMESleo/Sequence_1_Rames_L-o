@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
 
         //chemin = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)!!
         //mesDonnees = Localdata(titre = "GDL_PMR", chemin = chemin)
-        //alerter(mesDonnees.getJSONToString())
+
         DataProvider.isLOG = false
 
 
